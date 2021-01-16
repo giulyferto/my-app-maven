@@ -1,5 +1,6 @@
 package ar.com.ada.second.online.maven.view;
 
+import ar.com.ada.second.online.maven.model.dto.UserDTO;
 import ar.com.ada.second.online.maven.utils.Keyboard;
 
 import java.util.HashMap;
@@ -38,9 +39,24 @@ public class UserView {
         data.put("nickname", Keyboard.getInputString());
 
         System.out.print("Ingrese el nuevo email: ");
-        data.put("email", Keyboard.getInputString());
+        data.put("email", Keyboard.getInputEmail());
 
         return data;
+    }
+
+    public void existingUser(){
+        System.out.println("Oops el usuario ya existe en la base de datos");
+        Keyboard.pressEnterKeyToContinue();
+    }
+
+
+    public void showNewUser(UserDTO dto){
+        System.out.println("\nUsuario creado con exito");
+        System.out.printf("id %d", dto.getId());
+        System.out.printf("\nemail %s",dto.getEmail());
+        System.out.printf("\nnickname %s\n",dto.getNickname());
+
+     //   Keyboard.pressEnterKeyToContinue();
     }
 
 }
