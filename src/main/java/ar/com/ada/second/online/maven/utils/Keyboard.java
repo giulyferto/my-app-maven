@@ -43,7 +43,7 @@ public class Keyboard {
             try {
                 System.out.println("? ");
                 txt = keyboard.nextLine().trim();
-                while (!txt.isEmpty() && !txt.matches("^[A-Za-záéíóúÁÉÍÓÚñÑ\\s]+$")) {
+                while (!txt.isEmpty() && !txt.matches("^[A-Za-záéíóúÁÉÍÓÚñÑ\\.\\s]+$")) {
                     invalidData();
                     txt = keyboard.nextLine().trim();
                 }
@@ -78,6 +78,7 @@ public class Keyboard {
         }
 
         // "123" => 123
+     //   keyboard.next();
         return Integer.parseInt(txt);
     }
 
@@ -102,6 +103,31 @@ public class Keyboard {
         }
 
         // "123.123" => 123.123
+     //   keyboard.next();
         return Double.parseDouble(txt);
+
+    }
+
+    public static String getInputEmail() {
+        Scanner keyboard = getInstance();
+        boolean aux = true;
+        String txt = null;
+
+        while (aux) {
+            try {
+                System.out.println("? ");
+                txt = keyboard.nextLine().trim();
+                while (!txt.matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$") && !txt.isEmpty()) {
+                    invalidData();
+                    txt = keyboard.nextLine().trim();
+                }
+                aux = false;
+            } catch (InputMismatchException e) {
+                invalidData();
+                keyboard.next();
+            }
+        }
+        return txt;
+
     }
 }
