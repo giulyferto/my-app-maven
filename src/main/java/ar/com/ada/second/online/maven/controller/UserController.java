@@ -45,6 +45,9 @@ public class UserController {
                 case 3:
                     editUser();
                     break;
+                case 4:
+                    deleteUser();
+                    break;
                 case 5:
                     shouldItStay = false;
                     break;
@@ -54,19 +57,14 @@ public class UserController {
         }
     }
 
-
-    private void showAllUsers() {
-        printRecordsPerPage(null, true);
-    }
-
     private void editUser() {
         UserDAO userToEdit = getUserToEditOrDelete(Paginator.EDIT);
-        if (userToEdit != null){
+        if (userToEdit != null) {
             HashMap<String, String> dataEditUser = userView.getDataToEdit(userToEdit);
-            if (!dataEditUser.get("Nickname").isEmpty());
+            if (!dataEditUser.get("Nickname").isEmpty()) ;
             userToEdit.setNickname(dataEditUser.get("Nickname"));
 
-            if (!dataEditUser.get("Email").isEmpty());
+            if (!dataEditUser.get("Email").isEmpty()) ;
             userToEdit.setNickname(dataEditUser.get("Email"));
 
             jpaUserDAO.save(userToEdit);
@@ -76,6 +74,28 @@ public class UserController {
 
         }
     }
+
+    private void showAllUsers() {
+        printRecordsPerPage(null, true);
+    }
+
+    private void deleteUser() {
+        UserDAO userToDelete = getUserToEditOrDelete(Paginator.DELETE);
+        if (userToDelete != null) {
+            Boolean answer = userView.areYouSureToRemoveIt(userToDelete);
+            if (answer) {
+                Boolean hasDeleted = jpaUserDAO.delete(userToDelete);
+                if (hasDeleted) {
+                    userView.userHasBeenSuccessfullyRemoved();
+                } else {
+                    userView.errorWhenDeletingUser();
+                }
+            } else userView.editOrDeleteUserCancelled(Paginator.DELETE);
+        } else {
+            userView.editOrDeleteUserCancelled(Paginator.DELETE);
+        }
+    }
+
 
     private UserDAO getUserToEditOrDelete(String optionEditOrDelete) {
         boolean shouldIGetOut = false;
@@ -137,21 +157,20 @@ public class UserController {
                     case "U":
                         currentPage = totalPages - 1;
                         break;
-                    case "e":
-                    case "E":
-                        if (optionSelectEditOrDelete != null){
-                            userIdSelected = userView.userIDSelection(optionSelectEditOrDelete);
-                            shouldGetOut = true;
-                        }
                     case "q":
                     case "Q":
                         shouldGetOut = true;
                         break;
                     default:
-                        if (choice.matches("^-?\\d+$")) {
-                            int page = Integer.parseInt(choice);
-                            if (page > 0 && page <= totalPages) currentPage = page - 1;
-                        } else Keyboard.invalidData();
+                        if (optionSelectEditOrDelete != null) {
+                            userIdSelected = Integer.parseInt(choice);
+                            shouldGetOut = true;
+                        } else {
+                            if (choice.matches("^-?\\d+$")) {
+                                int page = Integer.parseInt(choice);
+                                if (page > 0 && page <= totalPages) currentPage = page - 1;
+                            } else Keyboard.invalidData();
+                        }
                 }
             } else {
                 shouldGetOut = true;

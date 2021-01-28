@@ -32,6 +32,7 @@ public class UserView {
         System.out.println("| 1 | Crear usuario");
         System.out.println("| 2 | Lista de Usuarios ");
         System.out.println("| 3 | Editar usuario");
+        System.out.println("| 4 | Eliminar usuario");
         System.out.println("| 5 | Regresar al menu principal");
         return Keyboard.getInputInteger();
     }
@@ -85,8 +86,8 @@ public class UserView {
             );
         });
         st.print();
-        if (optionSelectEditOrDelete != null && !optionSelectEditOrDelete.isEmpty())
-            paginator.set(paginator.size() - 2, optionSelectEditOrDelete);
+       /* if (optionSelectEditOrDelete != null && !optionSelectEditOrDelete.isEmpty())
+            paginator.set(paginator.size() - 2, optionSelectEditOrDelete);*/
 
         System.out.println("\n+-------------------------------------------+");
         paginator.forEach(page -> System.out.println(page + " "));
@@ -145,6 +146,32 @@ public class UserView {
         System.out.printf("\nEmail: %s", dto.getEmail());
         System.out.printf("\nNickname: %s\n", dto.getNickname());
 
+        Keyboard.pressEnterKeyToContinue();
+    }
+
+    public Boolean areYouSureToRemoveIt(UserDAO dao) {
+        System.out.println("\nSeguro que desea eliminar el siguiente registro?");
+        System.out.printf("id: %d", dao.getId());
+        System.out.printf("\nemail: %s", dao.getEmail());
+        System.out.printf("\nNickname %s\n",dao.getNickname());
+
+        System.out.println("| 1 | Si\n| 2 | No");
+
+        return Keyboard.getInputInteger() == 1;
+
+    }
+
+    public void userHasBeenSuccessfullyRemoved() {
+        System.out.println("Se ha eliminado el registro exitosamente!");
+    }
+
+    public void errorWhenDeletingUser() {
+        System.out.println("Oops! Ha ocurrido un error al eliminar el registro, intente de nuevo");
+    }
+
+    public void editOrDeleteUserCancelled(String action) {
+        action = Paginator.EDIT.equals(action) ? "Edicion" : "Eliminacion";
+        System.out.println("Ha cancelado la " + action + "de usuario\n");
         Keyboard.pressEnterKeyToContinue();
     }
 }
