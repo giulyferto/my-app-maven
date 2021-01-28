@@ -8,4 +8,7 @@ public interface DAO <T>{
     Integer getTotalRecords();
 
     Optional <T> findByID(Integer id);
+
+    Boolean delete(T t);
+
 }

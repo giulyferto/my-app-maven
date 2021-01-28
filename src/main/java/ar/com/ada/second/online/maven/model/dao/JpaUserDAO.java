@@ -40,7 +40,7 @@ public class JpaUserDAO extends JPA implements DAO<UserDAO> {
         if (userDAO.getId() == null)
             executeInsideTransaction(entityManager -> entityManager.persist(userDAO));
         else
-        executeInsideTransaction(entityManager -> entityManager.merge(userDAO) );
+            executeInsideTransaction(entityManager -> entityManager.merge(userDAO));
     }
 
     @Override
@@ -58,6 +58,20 @@ public class JpaUserDAO extends JPA implements DAO<UserDAO> {
         UserDAO userDAO = entityManager.find(UserDAO.class, id);
         closeConnection();
         return Optional.ofNullable(userDAO);
+    }
+
+    @Override
+    public Boolean delete(UserDAO dao) {
+        openConnection();
+        //sincronizacion
+        UserDAO userToDelete = entityManager.merge(dao);
+        //borrado
+        executeInsideTransaction(entityManager -> entityManager.remove(userToDelete));
+        closeConnection();
+
+        Optional<UserDAO> verifyByID = findByID(dao.getId());
+
+        return !verifyByID.isPresent();
     }
 
     public List<UserDAO> findAll(Integer from, Integer limit) {
